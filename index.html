@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="hi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ARTIME Hazri</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ARTIME हाज़िरी">
+<meta name="theme-color" content="#7a5a1e">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:#f4efe6;color:#222;padding-bottom:40px}
+.top{position:sticky;top:0;z-index:5;background:#7a5a1e;color:#fff;padding:8px 10px;padding-top:max(8px,env(safe-area-inset-top))}
+.top h1{margin:0 0 6px;font-size:16px;display:flex;justify-content:space-between;align-items:center}
+.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+button{font:inherit;border:0;border-radius:8px;padding:8px 10px;background:#fff;color:#7a5a1e;font-weight:600}
+button.p{background:#e8c66a;color:#3a2a08}
+input[type=date],input[type=time]{font:inherit;padding:6px;border-radius:8px;border:1px solid #bbb;background:#fff;color:#000}
+#st{font-size:12px;margin-top:6px;opacity:.95}
+.bulk{background:#fff;margin:8px;padding:8px;border-radius:10px;box-shadow:0 1px 3px #0002}
+.bulk small{display:block;margin-bottom:6px;color:#555}
+.bulk button{background:#7a5a1e;color:#fff;flex:1;min-width:70px}
+#list{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:8px;padding:0 8px}
+.c{background:#fff;border-radius:10px;padding:8px;box-shadow:0 1px 3px #0002}
+.c.ab{opacity:.55}
+.h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:15px}
+.h label{font-size:12px;color:#a33}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.f small{font-size:11px;color:#666}
+.t{display:flex;gap:4px}
+.t input{flex:1;min-width:0}
+.t button{padding:4px 8px;font-size:12px;background:#e8c66a;color:#3a2a08}
+dialog{border:0;border-radius:12px;width:min(92vw,520px);padding:14px}
+dialog input[type=url],dialog textarea{width:100%;font:inherit;padding:8px;border:1px solid #bbb;border-radius:8px;margin:4px 0 10px}
+dialog textarea{height:200px}
+</style></head><body>
+<div class="top">
+ <h1><span>ARTIME हाज़िरी</span><button id="cfg">⚙ Setting</button></h1>
+ <div class="row"><button id="prev">◀</button><input type="date" id="dt"><button id="next">▶</button><button id="pull">Sheet se lao</button><button class="p" id="sync">Sync</button></div>
+ <div id="st"></div>
+</div>
+<div class="bulk"><small>सबके लिए एक साथ (सिर्फ खाली वाले भरेंगे, गैरहाज़िर छोड़कर) — समय:</small>
+ <div class="row" style="margin-bottom:6px"><input type="time" id="bt"><span id="cnt" style="font-size:13px"></span></div>
+ <div class="row"><button data-b="i">सबका Log In</button><button data-b="lo">सबका Lunch Out</button><button data-b="li">सबका Lunch In</button><button data-b="o">सबका Log Out</button></div>
+</div>
+<div id="list"></div>
+<dialog id="dlg"><b>Google Sheet link (Apps Script /exec URL)</b>
+ <input type="url" id="url" placeholder="https://script.google.com/macros/s/.../exec">
+ <b>Employees ke naam (ek line mein ek)</b><textarea id="nm"></textarea>
+ <div class="row"><button class="p" id="save">Save</button><button id="close">Band</button></div></dialog>
+<script>
+const DEF=`मोईनुद्दीन खान
+मोहम्मद अली
+दिलीप जी
+सुभाष
+हनीफ भाई
+मोनू अली
+सुरेश जी
+पंकज
+विकास
+मुकेश
+बद्री राम
+धन सा
+मुकेश जी
+गणेश जी
+इशाक भाई
+इमरान भाई
+विनोद जी
+भंवरलाल जी
+बुंदू भाई
+शाकिब
+अरविन्द
+राजू
+धना राम
+आबित खान
+नफीश
+बाबू भाई
+सीमा जी
+कंचन जी
+भगवती जी
+नदीम`.split("\n");
+const $=s=>document.querySelector(s);
+const L=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+let names=L("names",DEF),data=L("att",{}),dirty=L("dirty",[]),url=localStorage.getItem("url")||"",timer;
+const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+let date=iso(new Date());
+const nowT=()=>new Date().toTimeString().slice(0,5);
+const rec=n=>((data[date]=data[date]||{})[n]=data[date][n]||{});
+function persist(){
+ localStorage.setItem("att",JSON.stringify(data));
+ if(!dirty.includes(date))dirty.push(date);
+ localStorage.setItem("dirty",JSON.stringify(dirty));
+ clearTimeout(timer);timer=setTimeout(sync,1500);status();
+}
+function status(){
+ const d=data[date]||{};
+ const p=names.filter(n=>d[n]&&d[n].i&&d[n].i!=="Absent").length;
+ const a=names.filter(n=>d[n]&&d[n].i==="Absent").length;
+ $("#cnt").textContent=`आए: ${p} | गैरहाज़िर: ${a} | कुल: ${names.length}`;
+ $("#st").textContent=!url?"⚠ Sheet link nahi joda (⚙ Setting mein daalein) — data phone mein save hai":
+  !navigator.onLine?"📴 Offline — net aane par apne aap sync hoga":
+  dirty.length?`⏳ ${dirty.length} din ka sync baaki`:"✓ Google Sheet mein save ho gaya";
+}
+function render(){
+ const d=data[date]||{};
+ $("#dt").value=date;
+ $("#list").innerHTML=names.map((n,k)=>{
+  const r=d[n]||{},ab=r.i==="Absent";
+  const f=(key,lab)=>`<div class=f><small>${lab}</small><div class=t><input type=time value="${ab?"":(r[key]||"")}" ${ab?"disabled":""} data-n="${k}" data-k="${key}"><button ${ab?"disabled":""} data-now="${k}|${key}">अभी</button></div></div>`;
+  return `<div class="c${ab?" ab":""}"><div class=h><b>${k+1}. ${n}</b><label><input type=checkbox ${ab?"checked":""} data-ab="${k}"> गैरहाज़िर</label></div><div class=g>${f("i","Log In")}${f("lo","Lunch Out")}${f("li","Lunch In")}${f("o","Log Out")}</div></div>`}).join("");
+ status();
+}
+$("#list").addEventListener("change",e=>{
+ const t=e.target;
+ if(t.dataset.n!==undefined){rec(names[t.dataset.n])[t.dataset.k]=t.value;persist();status()}
+ if(t.dataset.ab!==undefined){const n=names[t.dataset.ab];
+  if(t.checked)data[date][n]={i:"Absent"};else rec(n).i="";
+  persist();render()}
+});
+$("#list").addEventListener("click",e=>{
+ const b=e.target.closest("[data-now]");if(!b)return;
+ const [k,key]=b.dataset.now.split("|");rec(names[k])[key]=nowT();persist();render();
+});
+document.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{
+ const key=b.dataset.b,t=$("#bt").value||nowT();let c=0;
+ names.forEach(n=>{const r=rec(n);if(r.i==="Absent"||r[key])return;r[key]=t;c++});
+ if(c)persist();render();
+});
+function shift(x){const d=new Date(date);d.setDate(d.getDate()+x);date=iso(d);render()}
+$("#prev").onclick=()=>shift(-1);$("#next").onclick=()=>shift(1);
+$("#dt").onchange=e=>{date=e.target.value||date;render()};
+async function sync(){
+ if(!url||!navigator.onLine||!dirty.length){status();return}
+ for(const dd of [...dirty]){
+  const d=data[dd]||{};
+  const rows=names.map(n=>{const r=d[n]||{};return{name:n,in:r.i||"",lo:r.lo||"",li:r.li||"",out:r.o||""}});
+  try{
+   await fetch(url,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({date:dd,rows})});
+   dirty=dirty.filter(x=>x!==dd);localStorage.setItem("dirty",JSON.stringify(dirty));
+  }catch(e){break}
+ }
+ status();
+}
+$("#sync").onclick=()=>{if(!dirty.includes(date))dirty.push(date);sync()};
+$("#pull").onclick=async()=>{
+ if(!url){alert("Pehle Setting mein Sheet link daalein");return}
+ try{
+  const j=await (await fetch(url+"?date="+date)).json();
+  if(!j.rows||!j.rows.length){alert("Is din ka data Sheet mein nahi mila");return}
+  data[date]={};
+  j.rows.forEach(r=>{if(r.in||r.lo||r.li||r.out)data[date][r.name]={i:r.in,lo:r.lo,li:r.li,o:r.out}});
+  localStorage.setItem("att",JSON.stringify(data));render();
+ }catch(e){alert("Sheet se data nahi aaya. Net ya link check karein.")}
+};
+$("#cfg").onclick=()=>{$("#url").value=url;$("#nm").value=names.join("\n");$("#dlg").showModal()};
+$("#close").onclick=()=>$("#dlg").close();
+$("#save").onclick=()=>{
+ url=$("#url").value.trim();localStorage.setItem("url",url);
+ const nn=$("#nm").value.split("\n").map(s=>s.trim()).filter(Boolean);
+ if(nn.length){names=nn;localStorage.setItem("names",JSON.stringify(names))}
+ $("#dlg").close();render();sync();
+};
+addEventListener("online",sync);addEventListener("offline",status);
+$("#bt").value=nowT();
+render();sync();
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
+</script></body></html>
