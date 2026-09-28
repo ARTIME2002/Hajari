@@ -16,40 +16,47 @@ body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:#f4efe6;
 .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 button{font:inherit;border:0;border-radius:8px;padding:8px 10px;background:#fff;color:#7a5a1e;font-weight:600}
 button.p{background:#e8c66a;color:#3a2a08}
-input[type=date],input[type=time]{font:inherit;padding:6px;border-radius:8px;border:1px solid #bbb;background:#fff;color:#000}
-#st{font-size:12px;margin-top:6px;opacity:.95}
+input[type=text],input[type=url]{font:inherit;padding:9px 6px;border-radius:8px;border:1px solid #bbb;background:#fff;color:#000;min-width:0}
+#dt{width:120px;font-size:20px;font-weight:700;text-align:center}
+#wd{font-size:13px}
+#st{font-size:12px;margin-top:6px}
 .bulk{background:#fff;margin:8px;padding:8px;border-radius:10px;box-shadow:0 1px 3px #0002}
-.bulk small{display:block;margin-bottom:6px;color:#555}
-.bulk button{background:#7a5a1e;color:#fff;flex:1;min-width:70px}
-#list{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:8px;padding:0 8px}
+.bulk small{color:#555}
+.bulk button{background:#7a5a1e;color:#fff;flex:1;min-width:80px}
+#bt{width:110px;font-size:16px}
+#list{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:8px;padding:0 8px}
 .c{background:#fff;border-radius:10px;padding:8px;box-shadow:0 1px 3px #0002}
-.c.ab{opacity:.55}
-.h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:15px}
+.c.ab{opacity:.5}
+.h{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:15px}
 .h label{font-size:12px;color:#a33}
-.g{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.f small{font-size:11px;color:#666}
-.t{display:flex;gap:4px}
-.t input{flex:1;min-width:0}
-.t button{padding:4px 8px;font-size:12px;background:#e8c66a;color:#3a2a08}
+.g{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.g .lb{padding:2px 0;font-size:11px;background:#f0e2b6;color:#3a2a08;border-radius:6px;width:100%}
+.g input{width:100%;font-size:15px;text-align:center;padding:9px 1px;margin-top:3px}
+.g input:focus{outline:2px solid #e8a400;background:#fff8e0}
+.g input.bad{background:#fdd}
 dialog{border:0;border-radius:12px;width:min(92vw,520px);padding:14px}
 dialog input[type=url],dialog textarea{width:100%;font:inherit;padding:8px;border:1px solid #bbb;border-radius:8px;margin:4px 0 10px}
 dialog textarea{height:200px}
+.tip{font-size:12px;color:#555;margin:0 10px 8px}
 </style></head><body>
 <div class="top">
  <h1><span>ARTIME हाज़िरी</span><button id="cfg">⚙ Setting</button></h1>
- <div class="row"><button id="prev">◀</button><input type="date" id="dt"><button id="next">▶</button><button id="pull">Sheet se lao</button><button class="p" id="sync">Sync</button></div>
+ <div class="row"><button id="prev">◀</button><input type="text" id="dt" inputmode="numeric" placeholder="1/10/26"><button id="next">▶</button><button id="today">आज</button><span id="wd"></span></div>
+ <div class="row" style="margin-top:6px"><button id="pull">Sheet se lao</button><button class="p" id="sync">Sync</button></div>
  <div id="st"></div>
 </div>
-<div class="bulk"><small>सबके लिए एक साथ (सिर्फ खाली वाले भरेंगे, गैरहाज़िर छोड़कर) — समय:</small>
- <div class="row" style="margin-bottom:6px"><input type="time" id="bt"><span id="cnt" style="font-size:13px"></span></div>
+<div class="bulk"><div class="row" style="margin-bottom:6px"><small>सबके लिए समय (खाली छोड़ें = अभी का):</small><input type="text" id="bt" inputmode="numeric" placeholder="जैसे 900"><span id="cnt" style="font-size:13px"></span></div>
  <div class="row"><button data-b="i">सबका Log In</button><button data-b="lo">सबका Lunch Out</button><button data-b="li">सबका Lunch In</button><button data-b="o">सबका Log Out</button></div>
+ <small>सिर्फ खाली वाले भरेंगे, गैरहाज़िर छोड़कर।</small>
 </div>
+<p class="tip">समय सिर्फ नंबर से लिखें: <b>905</b> = 9:05, <b>130</b> = 1:30 दोपहर, <b>600</b> = 6:00 शाम। Log In सुबह (AM) और बाकी दोपहर/शाम (PM) अपने आप। अलग चाहिए तो पीछे <b>a</b> या <b>p</b> लगाएँ (जैसे 1100a)। Enter दबाने पर नीचे वाले का खाना खुलता है। Log In/Lunch/Out लिखे नाम पर टैप = अभी का समय।</p>
 <div id="list"></div>
 <dialog id="dlg"><b>Google Sheet link (Apps Script /exec URL)</b>
- <input type="url" id="url" placeholder="https://script.google.com/macros/s/AKfycbzbAmxgxyx4-0dvmzuCbyLx_yTaTaiCG8opoIq4dmo7Q_b7ADoDc0Czv2jxrswWhGdD/exec">
+ <input type="url" id="url" placeholder="https://script.google.com/macros/s/.../exec">
  <b>Employees ke naam (ek line mein ek)</b><textarea id="nm"></textarea>
  <div class="row"><button class="p" id="save">Save</button><button id="close">Band</button></div></dialog>
 <script>
+const DEFAULT_URL="https://script.google.com/macros/s/AKfycbzbAmxgxyx4-0dvmzuCbyLx_yTaTaiCG8opoIq4dmo7Q_b7ADoDc0Czv2jxrswWhGdD/exec";
 const DEF=`मोईनुद्दीन खान
 मोहम्मद अली
 दिलीप जी
@@ -82,10 +89,33 @@ const DEF=`मोईनुद्दीन खान
 नदीम`.split("\n");
 const $=s=>document.querySelector(s);
 const L=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
-let names=L("names",DEF),data=L("att",{}),dirty=L("dirty",[]),url=localStorage.getItem("url")||"",timer;
+let names=L("names",DEF),data=L("att",{}),dirty=L("dirty",[]),url=localStorage.getItem("url")||DEFAULT_URL,timer;
 const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
 let date=iso(new Date());
 const nowT=()=>new Date().toTimeString().slice(0,5);
+const KEYS=[["i","Log In"],["lo","Lunch Out"],["li","Lunch In"],["o","Log Out"]];
+const label=i=>{const p=i.split("-");return +p[2]+"/"+ +p[1]+"/"+p[0].slice(2)};
+function fmt12(t){if(!t)return"";const[h,m]=t.split(":").map(Number);return(h%12||12)+":"+String(m).padStart(2,"0")+" "+(h>=12?"PM":"AM")}
+function parse12(s){const m=/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec((s||"").trim());if(!m)return"";let h=+m[1]%12;if(/pm/i.test(m[3]))h+=12;return String(h).padStart(2,"0")+":"+m[2]}
+function parseTyped(s,key){
+ s=(s||"").trim().toLowerCase();if(!s)return"";
+ const ap=/p/.test(s)?"p":/a/.test(s)?"a":"";
+ const d=s.replace(/\D/g,"");if(!d)return null;
+ let h,m;
+ if(d.length<=2){h=+d;m=0}else if(d.length===3){h=+d[0];m=+d.slice(1)}else{h=+d.slice(0,2);m=+d.slice(2,4)}
+ if(m>59||h>24)return null;if(h===24)h=0;
+ if(ap==="p"){if(h<12)h+=12}else if(ap==="a"){if(h===12)h=0}
+ else if(h>=1&&h<=11&&key!=="i")h+=12;
+ return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");
+}
+function parseDate(s){
+ const now=new Date();let p=(s||"").trim().split(/\D+/).filter(Boolean),d,m,y=now.getFullYear();
+ if(p.length===1){const x=p[0];if(x.length===6){d=+x.slice(0,2);m=+x.slice(2,4);y=+x.slice(4)}else if(x.length===8){d=+x.slice(0,2);m=+x.slice(2,4);y=+x.slice(4)}else if(x.length===4){d=+x.slice(0,2);m=+x.slice(2)}else if(x.length<=2){d=+x;m=now.getMonth()+1}else return null}
+ else if(p.length===2){d=+p[0];m=+p[1]}else if(p.length===3){d=+p[0];m=+p[1];y=+p[2]}else return null;
+ if(y<100)y+=2000;
+ const t=new Date(y,m-1,d);if(t.getFullYear()!==y||t.getMonth()!==m-1||t.getDate()!==d)return null;
+ return iso(t);
+}
 const rec=n=>((data[date]=data[date]||{})[n]=data[date][n]||{});
 function persist(){
  localStorage.setItem("att",JSON.stringify(data));
@@ -98,43 +128,72 @@ function status(){
  const p=names.filter(n=>d[n]&&d[n].i&&d[n].i!=="Absent").length;
  const a=names.filter(n=>d[n]&&d[n].i==="Absent").length;
  $("#cnt").textContent=`आए: ${p} | गैरहाज़िर: ${a} | कुल: ${names.length}`;
- $("#st").textContent=!url?"⚠ Sheet link nahi joda (⚙ Setting mein daalein) — data phone mein save hai":
+ $("#st").textContent=!url?"⚠ Sheet link nahi joda (⚙ Setting mein daalein)":
   !navigator.onLine?"📴 Offline — net aane par apne aap sync hoga":
   dirty.length?`⏳ ${dirty.length} din ka sync baaki`:"✓ Google Sheet mein save ho gaya";
 }
 function render(){
  const d=data[date]||{};
- $("#dt").value=date;
+ $("#dt").value=label(date);
+ $("#wd").textContent=new Date(date+"T00:00").toLocaleDateString("hi-IN",{weekday:"long"});
  $("#list").innerHTML=names.map((n,k)=>{
   const r=d[n]||{},ab=r.i==="Absent";
-  const f=(key,lab)=>`<div class=f><small>${lab}</small><div class=t><input type=time value="${ab?"":(r[key]||"")}" ${ab?"disabled":""} data-n="${k}" data-k="${key}"><button ${ab?"disabled":""} data-now="${k}|${key}">अभी</button></div></div>`;
-  return `<div class="c${ab?" ab":""}"><div class=h><b>${k+1}. ${n}</b><label><input type=checkbox ${ab?"checked":""} data-ab="${k}"> गैरहाज़िर</label></div><div class=g>${f("i","Log In")}${f("lo","Lunch Out")}${f("li","Lunch In")}${f("o","Log Out")}</div></div>`}).join("");
+  const f=([key,lab])=>`<div><button class=lb data-now="${k}|${key}" ${ab?"disabled":""}>${lab}</button><input type=text inputmode=numeric autocomplete=off value="${ab?"":fmt12(r[key])}" ${ab?"disabled":""} data-n="${k}" data-k="${key}"></div>`;
+  return `<div class="c${ab?" ab":""}"><div class=h><b>${k+1}. ${n}</b><label><input type=checkbox ${ab?"checked":""} data-ab="${k}"> गैरहाज़िर</label></div><div class=g>${KEYS.map(f).join("")}</div></div>`}).join("");
  status();
 }
-$("#list").addEventListener("change",e=>{
+const list=$("#list");
+list.addEventListener("focusin",e=>{if(e.target.dataset.k)setTimeout(()=>e.target.select(),0)});
+list.addEventListener("focusout",e=>{
+ const t=e.target;if(t.dataset.k===undefined||t.disabled)return;
+ const v=parseTyped(t.value,t.dataset.k);
+ if(v===null){t.classList.add("bad");return}
+ t.classList.remove("bad");
+ const r=rec(names[t.dataset.n]);
+ if((r[t.dataset.k]||"")!==v){r[t.dataset.k]=v;persist()}
+ t.value=fmt12(v);
+});
+list.addEventListener("keydown",e=>{
+ if(e.key!=="Enter"||e.target.dataset.k===undefined)return;
+ e.preventDefault();
+ const all=[...list.querySelectorAll(`input[data-k="${e.target.dataset.k}"]:not(:disabled)`)];
+ const nx=all[all.indexOf(e.target)+1];e.target.blur();if(nx)nx.focus();
+});
+list.addEventListener("change",e=>{
  const t=e.target;
- if(t.dataset.n!==undefined){rec(names[t.dataset.n])[t.dataset.k]=t.value;persist();status()}
  if(t.dataset.ab!==undefined){const n=names[t.dataset.ab];
-  if(t.checked)data[date][n]={i:"Absent"};else rec(n).i="";
+  if(t.checked){(data[date]=data[date]||{})[n]={i:"Absent"}}else rec(n).i="";
   persist();render()}
 });
-$("#list").addEventListener("click",e=>{
+list.addEventListener("click",e=>{
  const b=e.target.closest("[data-now]");if(!b)return;
  const [k,key]=b.dataset.now.split("|");rec(names[k])[key]=nowT();persist();render();
 });
 document.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{
- const key=b.dataset.b,t=$("#bt").value||nowT();let c=0;
+ const key=b.dataset.b;let t=parseTyped($("#bt").value,key);
+ if(t===null){alert("समय सही नहीं है");return}
+ t=t||nowT();let c=0;
  names.forEach(n=>{const r=rec(n);if(r.i==="Absent"||r[key])return;r[key]=t;c++});
  if(c)persist();render();
 });
-function shift(x){const d=new Date(date);d.setDate(d.getDate()+x);date=iso(d);render()}
+function goDate(iso_){date=iso_;render()}
+function shift(x){const d=new Date(date+"T00:00");d.setDate(d.getDate()+x);goDate(iso(d))}
 $("#prev").onclick=()=>shift(-1);$("#next").onclick=()=>shift(1);
-$("#dt").onchange=e=>{date=e.target.value||date;render()};
+$("#today").onclick=()=>goDate(iso(new Date()));
+$("#dt").addEventListener("focus",e=>setTimeout(()=>e.target.select(),0));
+function applyDate(){const v=parseDate($("#dt").value);if(v)goDate(v);else{$("#dt").value=label(date);}}
+$("#dt").addEventListener("change",applyDate);
+$("#dt").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();applyDate();e.target.blur()}});
+function rowText(r){
+ r=r||{};if(r.i==="Absent")return"Absent";
+ if(!KEYS.some(([k])=>r[k]))return"";
+ return KEYS.map(([k])=>r[k]?fmt12(r[k]):"--").join(" | ");
+}
 async function sync(){
  if(!url||!navigator.onLine||!dirty.length){status();return}
  for(const dd of [...dirty]){
   const d=data[dd]||{};
-  const rows=names.map(n=>{const r=d[n]||{};return{name:n,in:r.i||"",lo:r.lo||"",li:r.li||"",out:r.o||""}});
+  const rows=names.map(n=>({name:n,v:rowText(d[n])}));
   try{
    await fetch(url,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({date:dd,rows})});
    dirty=dirty.filter(x=>x!==dd);localStorage.setItem("dirty",JSON.stringify(dirty));
@@ -147,22 +206,26 @@ $("#pull").onclick=async()=>{
  if(!url){alert("Pehle Setting mein Sheet link daalein");return}
  try{
   const j=await (await fetch(url+"?date="+date)).json();
-  if(!j.rows||!j.rows.length){alert("Is din ka data Sheet mein nahi mila");return}
+  const rows=(j.rows||[]).filter(r=>r.v);
+  if(!rows.length){alert("Is din ka data Sheet mein nahi mila");return}
   data[date]={};
-  j.rows.forEach(r=>{if(r.in||r.lo||r.li||r.out)data[date][r.name]={i:r.in,lo:r.lo,li:r.li,o:r.out}});
+  rows.forEach(r=>{
+   if(r.v==="Absent"){data[date][r.name]={i:"Absent"};return}
+   const p=r.v.split(/\s*\|\s*/).map(x=>x==="--"?"":parse12(x));
+   data[date][r.name]={i:p[0]||"",lo:p[1]||"",li:p[2]||"",o:p[3]||""};
+  });
   localStorage.setItem("att",JSON.stringify(data));render();
  }catch(e){alert("Sheet se data nahi aaya. Net ya link check karein.")}
 };
 $("#cfg").onclick=()=>{$("#url").value=url;$("#nm").value=names.join("\n");$("#dlg").showModal()};
 $("#close").onclick=()=>$("#dlg").close();
 $("#save").onclick=()=>{
- url=$("#url").value.trim();localStorage.setItem("url",url);
+ url=$("#url").value.trim()||DEFAULT_URL;localStorage.setItem("url",url);
  const nn=$("#nm").value.split("\n").map(s=>s.trim()).filter(Boolean);
  if(nn.length){names=nn;localStorage.setItem("names",JSON.stringify(names))}
  $("#dlg").close();render();sync();
 };
 addEventListener("online",sync);addEventListener("offline",status);
-$("#bt").value=nowT();
 render();sync();
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
 </script></body></html>
