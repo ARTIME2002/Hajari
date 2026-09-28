@@ -45,11 +45,11 @@ dialog textarea{height:200px}
  <div class="row" style="margin-top:6px"><button id="pull">Sheet se lao</button><button class="p" id="sync">Sync</button></div>
  <div id="st"></div>
 </div>
-<div class="bulk"><div class="row" style="margin-bottom:6px"><small>सबके लिए समय (खाली छोड़ें = अभी का):</small><input type="text" id="bt" inputmode="numeric" placeholder="जैसे 900"><span id="cnt" style="font-size:13px"></span></div>
+<div class="bulk"><div class="row" style="margin-bottom:6px"><small>सबके लिए समय (खाली छोड़ें = अभी का):</small><input type="text" id="bt" inputmode="numeric" placeholder="जैसे 0900"><span id="cnt" style="font-size:13px"></span></div>
  <div class="row"><button data-b="i">सबका Log In</button><button data-b="lo">सबका Lunch Out</button><button data-b="li">सबका Lunch In</button><button data-b="o">सबका Log Out</button></div>
  <small>सिर्फ खाली वाले भरेंगे, गैरहाज़िर छोड़कर।</small>
 </div>
-<p class="tip">समय सिर्फ नंबर से लिखें: <b>905</b> = 9:05, <b>130</b> = 1:30 दोपहर, <b>600</b> = 6:00 शाम। Log In सुबह (AM) और बाकी दोपहर/शाम (PM) अपने आप। अलग चाहिए तो पीछे <b>a</b> या <b>p</b> लगाएँ (जैसे 1100a)। Enter दबाने पर नीचे वाले का खाना खुलता है। Log In/Lunch/Out लिखे नाम पर टैप = अभी का समय।</p>
+<p class="tip">समय <b>24 घंटे</b> में, 4 नंबर लिखें: <b>0856</b> = 08:56 सुबह, <b>1556</b> = 15:56 (3:56 शाम)। 4 नंबर पूरे होते ही अगले आदमी का खाना अपने आप खुल जाता है (Enter की ज़रूरत नहीं)। खाने के ऊपर लिखे नाम (Log In, Lunch...) पर टैप = अभी का समय।</p>
 <div id="list"></div>
 <dialog id="dlg"><b>Google Sheet link (Apps Script /exec URL)</b>
  <input type="url" id="url" placeholder="https://script.google.com/macros/s/.../exec">
@@ -95,17 +95,15 @@ let date=iso(new Date());
 const nowT=()=>new Date().toTimeString().slice(0,5);
 const KEYS=[["i","Log In"],["lo","Lunch Out"],["li","Lunch In"],["o","Log Out"]];
 const label=i=>{const p=i.split("-");return +p[2]+"/"+ +p[1]+"/"+p[0].slice(2)};
-function fmt12(t){if(!t)return"";const[h,m]=t.split(":").map(Number);return(h%12||12)+":"+String(m).padStart(2,"0")+" "+(h>=12?"PM":"AM")}
-function parse12(s){const m=/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec((s||"").trim());if(!m)return"";let h=+m[1]%12;if(/pm/i.test(m[3]))h+=12;return String(h).padStart(2,"0")+":"+m[2]}
-function parseTyped(s,key){
- s=(s||"").trim().toLowerCase();if(!s)return"";
- const ap=/p/.test(s)?"p":/a/.test(s)?"a":"";
- const d=s.replace(/\D/g,"");if(!d)return null;
+function fmt12(t){return t||""}
+function parse12(s){s=(s||"").trim();let m=/^(\d{1,2}):(\d{2})$/.exec(s);if(m)return m[1].padStart(2,"0")+":"+m[2];
+ m=/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(s);if(!m)return"";let h=+m[1]%12;if(/pm/i.test(m[3]))h+=12;return String(h).padStart(2,"0")+":"+m[2]}
+function parseTyped(s){
+ s=(s||"").trim();if(!s)return"";
+ const d=s.replace(/\D/g,"");if(!d||d.length>4)return null;
  let h,m;
- if(d.length<=2){h=+d;m=0}else if(d.length===3){h=+d[0];m=+d.slice(1)}else{h=+d.slice(0,2);m=+d.slice(2,4)}
- if(m>59||h>24)return null;if(h===24)h=0;
- if(ap==="p"){if(h<12)h+=12}else if(ap==="a"){if(h===12)h=0}
- else if(h>=1&&h<=11&&key!=="i")h+=12;
+ if(d.length<=2){h=+d;m=0}else if(d.length===3){h=+d[0];m=+d.slice(1)}else{h=+d.slice(0,2);m=+d.slice(2)}
+ if(m>59||h>23)return null;
  return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");
 }
 function parseDate(s){
@@ -152,6 +150,12 @@ list.addEventListener("focusout",e=>{
  const r=rec(names[t.dataset.n]);
  if((r[t.dataset.k]||"")!==v){r[t.dataset.k]=v;persist()}
  t.value=fmt12(v);
+});
+list.addEventListener("input",e=>{
+ const t=e.target;if(t.dataset.k===undefined||!/^\d{4}$/.test(t.value))return;
+ if(parseTyped(t.value)===null){t.classList.add("bad");return}
+ const all=[...list.querySelectorAll(`input[data-k="${t.dataset.k}"]:not(:disabled)`)];
+ const nx=all[all.indexOf(t)+1];if(nx)nx.focus();else t.blur();
 });
 list.addEventListener("keydown",e=>{
  if(e.key!=="Enter"||e.target.dataset.k===undefined)return;
