@@ -9,50 +9,81 @@
 <meta name="apple-mobile-web-app-title" content="ARTIME हाज़िरी">
 <meta name="theme-color" content="#7a5a1e">
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:#f4efe6;color:#222;padding-bottom:40px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:#f4efe6;color:#222;padding-bottom:90px;touch-action:manipulation}
 .top{position:sticky;top:0;z-index:5;background:#7a5a1e;color:#fff;padding:8px 10px;padding-top:max(8px,env(safe-area-inset-top))}
 .top h1{margin:0 0 6px;font-size:16px;display:flex;justify-content:space-between;align-items:center}
 .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-button{font:inherit;border:0;border-radius:8px;padding:8px 10px;background:#fff;color:#7a5a1e;font-weight:600}
+button{font:inherit;border:0;border-radius:8px;padding:9px 12px;background:#fff;color:#7a5a1e;font-weight:600;cursor:pointer}
+button:disabled{opacity:.4}
 button.p{background:#e8c66a;color:#3a2a08}
-input[type=text],input[type=url]{font:inherit;padding:9px 6px;border-radius:8px;border:1px solid #bbb;background:#fff;color:#000;min-width:0}
-#dt{width:120px;font-size:20px;font-weight:700;text-align:center}
+input[type=text],input[type=url]{font:inherit;font-size:17px;padding:10px 6px;border-radius:8px;border:1px solid #bbb;background:#fff;color:#000;min-width:0}
+#dt{width:125px;font-size:20px;font-weight:700;text-align:center}
 #wd{font-size:13px}
 #st{font-size:12px;margin-top:6px}
+.tabs{margin-top:6px;gap:5px;flex-wrap:nowrap;overflow-x:auto}
+.tabs button{flex:1;min-width:64px;background:#9a7a3e;color:#fff;padding:9px 4px;font-size:14px;white-space:nowrap}
+.tabs button.on{background:#fff;color:#7a5a1e}
+.tabs button small{display:block;font-size:10px;font-weight:600;opacity:.85}
+.tabs button.ok small{color:#2e9e4f;opacity:1}
 .bulk{background:#fff;margin:8px;padding:8px;border-radius:10px;box-shadow:0 1px 3px #0002}
+.bulk summary{font-weight:700;color:#7a5a1e;cursor:pointer;padding:4px 0}
 .bulk small{color:#555}
-.bulk button{background:#7a5a1e;color:#fff;flex:1;min-width:80px}
-#bt{width:110px;font-size:16px}
-#list{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:8px;padding:0 8px}
-.c{background:#fff;border-radius:10px;padding:8px;box-shadow:0 1px 3px #0002}
-.c.ab{opacity:.5}
-.h{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:15px}
-.h label{font-size:12px;color:#a33}
-.g{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
-.g .lb{padding:2px 0;font-size:11px;background:#f0e2b6;color:#3a2a08;border-radius:6px;width:100%}
-.g input{width:100%;font-size:15px;text-align:center;padding:9px 1px;margin-top:3px}
-.g input:focus{outline:2px solid #e8a400;background:#fff8e0}
-.g input.bad{background:#fdd}
+.bulk button{background:#7a5a1e;color:#fff;flex:1;min-width:120px}
+#bt{width:110px;font-size:17px}
+#cnt{margin:2px 10px 6px;font-size:13px;font-weight:600}
+#list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px;padding:0 8px}
+.c{background:#fff;border-radius:10px;padding:8px;box-shadow:0 1px 3px #0002;border-left:5px solid #e0d6c0}
+.c.done{border-left-color:#2e9e4f}
+.c.ab{border-left-color:#c33;background:#f3eeee}
+.h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:16px;gap:6px}
+.h b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dbtn{background:#2e9e4f;color:#fff;font-size:13px;padding:7px 10px;flex:none}
+.c.ab .dbtn{display:none}
+.hb{display:flex;gap:6px;flex:none}
+#pend{background:#7a5a1e;color:#fff;font-size:12px;padding:5px 9px;margin-left:8px}
+#pend.on{background:#2e9e4f}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}
+dialog .dg input{width:100%;font-size:17px;text-align:center;padding:9px 4px;border:1px solid #bbb;border-radius:8px;margin:2px 0 6px}
+.abtn{background:#f6f1e6;color:#a33;font-size:13px;padding:7px 10px;flex:none;border:1px solid #e3d6b5}
+.c.ab .abtn{background:#c33;color:#fff;border-color:#c33}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px}
+.lb{display:block;font-size:12px;color:#7a5a1e;font-weight:700;margin:0 0 2px 2px}
+.ir{display:flex;gap:6px}
+.ir input{flex:1;width:100%;font-size:19px;text-align:center;padding:11px 2px}
+.ir input:focus{outline:2px solid #e8a400;background:#fff8e0}
+.ir input.bad{background:#fdd}
+.nw{flex:none;width:44px;padding:0;background:#f0e2b6;color:#3a2a08;font-size:18px}
+.c.ab .ir input,.c.ab .nw{opacity:.4}
 dialog{border:0;border-radius:12px;width:min(92vw,520px);padding:14px}
-dialog input[type=url],dialog textarea{width:100%;font:inherit;padding:8px;border:1px solid #bbb;border-radius:8px;margin:4px 0 10px}
+dialog input[type=url],dialog textarea{width:100%;font:inherit;font-size:16px;padding:8px;border:1px solid #bbb;border-radius:8px;margin:4px 0 10px}
 dialog textarea{height:200px}
 .tip{font-size:12px;color:#555;margin:0 10px 8px}
+#toast{position:fixed;left:10px;right:10px;bottom:max(14px,env(safe-area-inset-bottom));z-index:20;background:#222;color:#fff;border-radius:10px;padding:10px 12px;display:none;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 4px 14px #0006;max-width:520px;margin:auto}
+#toast.on{display:flex}
+#toast button{background:#e8c66a;color:#3a2a08;flex:none}
 </style></head><body>
 <div class="top">
  <h1><span>ARTIME हाज़िरी</span><button id="cfg">⚙ Setting</button></h1>
  <div class="row"><button id="prev">◀</button><input type="text" id="dt" inputmode="numeric" placeholder="1/10/26"><button id="next">▶</button><button id="today">आज</button><span id="wd"></span></div>
  <div class="row" style="margin-top:6px"><button id="pull">Sheet se lao</button><button class="p" id="sync">Sync</button></div>
+ <div class="row tabs" id="tabs"></div>
  <div id="st"></div>
 </div>
-<div class="bulk"><div class="row" style="margin-bottom:6px"><small>सबके लिए समय (खाली छोड़ें = अभी का):</small><input type="text" id="bt" inputmode="numeric" placeholder="जैसे 0900"><span id="cnt" style="font-size:13px"></span></div>
- <div class="row"><button data-b="i">सबका Log In</button><button data-b="lo">सबका Lunch Out</button><button data-b="li">सबका Lunch In</button><button data-b="o">सबका Log Out</button></div>
- <small>सिर्फ खाली वाले भरेंगे, गैरहाज़िर छोड़कर।</small>
-</div>
-<p class="tip">समय <b>24 घंटे</b> में, 4 नंबर लिखें: <b>0856</b> = 08:56 सुबह, <b>1556</b> = 15:56 (3:56 शाम)। 4 नंबर पूरे होते ही अगले आदमी का खाना अपने आप खुल जाता है (Enter की ज़रूरत नहीं)। खाने के ऊपर लिखे नाम (Log In, Lunch...) पर टैप = अभी का समय।</p>
+<div class="row" style="padding:0 10px"><div id="cnt" style="margin:2px 0 6px"></div><button id="pend">सिर्फ बाकी दिखाओ</button></div>
+<details class="bulk"><summary>सबके लिए एक साथ समय भरें</summary>
+ <div class="row" style="margin:6px 0"><small>समय (खाली = अभी का):</small><input type="text" id="bt" inputmode="numeric" placeholder="जैसे 0900"></div>
+ <div class="row"><button data-b="i">सबका Log In</button><button data-b="lo">सबका Lunch Out</button><button data-b="li">सबका Lunch In</button><button data-b="o">सबका Log Out</button><button id="bdef" style="background:#2e9e4f;flex-basis:100%">✓ सबका रोज़ वाला समय (चारों)</button></div>
+ <small>सिर्फ अभी खुले टैब (जैसे 1-10) के खाली वाले भरेंगे, गैरहाज़िर छोड़कर। भरने से पहले पूछेगा, और बाद में Undo मिलेगा।</small>
+</details>
+<p class="tip">समय <b>24 घंटे</b> में, 4 नंबर: <b>0856</b> = 08:56 सुबह, <b>1556</b> = 3:56 शाम। 4 नंबर पूरे होते ही अगला खाना खुल जाता है। <b>⏱</b> बटन = अभी का समय (गलती हो तो नीचे Undo आएगा)।</p>
 <div id="list"></div>
+<div id="toast"><span id="tmsg"></span><button id="undo">↩ वापस</button></div>
 <dialog id="dlg"><b>Google Sheet link (Apps Script /exec URL)</b>
  <input type="url" id="url" placeholder="https://script.google.com/macros/s/.../exec">
+ <b>रोज़ वाला समय (✓ रोज़ बटन इसे भरेगा)</b>
+ <div class="dg"><div><small>Log In</small><input type="text" inputmode="numeric" id="d_i" placeholder="0900"></div><div><small>Lunch Out</small><input type="text" inputmode="numeric" id="d_lo" placeholder="1300"></div><div><small>Lunch In</small><input type="text" inputmode="numeric" id="d_li" placeholder="1330"></div><div><small>Log Out</small><input type="text" inputmode="numeric" id="d_o" placeholder="1800"></div></div>
  <b>Employees ke naam (ek line mein ek)</b><textarea id="nm"></textarea>
  <div class="row"><button class="p" id="save">Save</button><button id="close">Band</button></div></dialog>
 <script>
@@ -89,13 +120,31 @@ const DEF=`मोईनुद्दीन खान
 नदीम`.split("\n");
 const $=s=>document.querySelector(s);
 const L=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let names=L("names",DEF),data=L("att",{}),dirty=L("dirty",[]),url=localStorage.getItem("url")||DEFAULT_URL,timer;
+let defs=L("defs",{i:"09:00",lo:"13:00",li:"13:30",o:"18:00"}),pend=false;
+const ver={};let syncing=false,again=false;
 const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
 let date=iso(new Date());
+const GS=10;let grp=localStorage.getItem("grp")||"0";
+function range(){if(grp==="all"||+grp*GS>=names.length)return[0,names.length];return[+grp*GS,Math.min(names.length,(+grp+1)*GS)]}
+function renderTabs(){
+ const d=data[date]||{},tabs=[];
+ for(let g=0;g*GS<names.length;g++){
+  const a=g*GS,b=Math.min(names.length,a+GS);let f=0;
+  for(let k=a;k<b;k++){const r=d[names[k]]||{};if(r.i==="Absent"||KEYS.every(([key])=>r[key]))f++}
+  tabs.push(`<button data-g="${g}" class="${grp===String(g)?"on":""}${f===b-a?" ok":""}">${a+1}-${b}<small>${f===b-a?"✓ पूरा":f+"/"+(b-a)}</small></button>`);
+ }
+ tabs.push(`<button data-g="all" class="${grp==="all"?"on":""}">सब<small>${names.length}</small></button>`);
+ $("#tabs").innerHTML=tabs.join("");
+}
+$("#tabs").addEventListener("click",e=>{
+ const b=e.target.closest("[data-g]");if(!b)return;
+ grp=b.dataset.g;localStorage.setItem("grp",grp);render();scrollTo(0,0);
+});
 const nowT=()=>new Date().toTimeString().slice(0,5);
 const KEYS=[["i","Log In"],["lo","Lunch Out"],["li","Lunch In"],["o","Log Out"]];
 const label=i=>{const p=i.split("-");return +p[2]+"/"+ +p[1]+"/"+p[0].slice(2)};
-function fmt12(t){return t||""}
 function parse12(s){s=(s||"").trim();let m=/^(\d{1,2}):(\d{2})$/.exec(s);if(m)return m[1].padStart(2,"0")+":"+m[2];
  m=/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(s);if(!m)return"";let h=+m[1]%12;if(/pm/i.test(m[3]))h+=12;return String(h).padStart(2,"0")+":"+m[2]}
 function parseTyped(s){
@@ -108,20 +157,37 @@ function parseTyped(s){
 }
 function parseDate(s){
  const now=new Date();let p=(s||"").trim().split(/\D+/).filter(Boolean),d,m,y=now.getFullYear();
- if(p.length===1){const x=p[0];if(x.length===6){d=+x.slice(0,2);m=+x.slice(2,4);y=+x.slice(4)}else if(x.length===8){d=+x.slice(0,2);m=+x.slice(2,4);y=+x.slice(4)}else if(x.length===4){d=+x.slice(0,2);m=+x.slice(2)}else if(x.length<=2){d=+x;m=now.getMonth()+1}else return null}
+ if(p.length===1){const x=p[0];if(x.length===6||x.length===8){d=+x.slice(0,2);m=+x.slice(2,4);y=+x.slice(4)}else if(x.length===4){d=+x.slice(0,2);m=+x.slice(2)}else if(x.length<=2){d=+x;m=now.getMonth()+1}else return null}
  else if(p.length===2){d=+p[0];m=+p[1]}else if(p.length===3){d=+p[0];m=+p[1];y=+p[2]}else return null;
  if(y<100)y+=2000;
  const t=new Date(y,m-1,d);if(t.getFullYear()!==y||t.getMonth()!==m-1||t.getDate()!==d)return null;
  return iso(t);
 }
 const rec=n=>((data[date]=data[date]||{})[n]=data[date][n]||{});
+
+/* ---------- Undo ---------- */
+let undoSnap=null,tt;
+function snap(){undoSnap={date,s:JSON.stringify(data[date]||{})}}
+function toast(msg,canUndo){
+ $("#tmsg").textContent=msg;$("#undo").style.display=canUndo?"":"none";
+ $("#toast").classList.add("on");clearTimeout(tt);tt=setTimeout(()=>$("#toast").classList.remove("on"),canUndo?7000:2500);
+}
+$("#undo").onclick=()=>{
+ if(!undoSnap)return;
+ date=undoSnap.date;data[date]=JSON.parse(undoSnap.s);undoSnap=null;
+ persist();render();$("#toast").classList.remove("on");
+};
+
+/* ---------- Save / sync ---------- */
 function persist(){
  localStorage.setItem("att",JSON.stringify(data));
+ ver[date]=(ver[date]||0)+1;
  if(!dirty.includes(date))dirty.push(date);
  localStorage.setItem("dirty",JSON.stringify(dirty));
- clearTimeout(timer);timer=setTimeout(sync,1500);status();
+ clearTimeout(timer);timer=setTimeout(sync,2000);status();
 }
 function status(){
+ renderTabs();
  const d=data[date]||{};
  const p=names.filter(n=>d[n]&&d[n].i&&d[n].i!=="Absent").length;
  const a=names.filter(n=>d[n]&&d[n].i==="Absent").length;
@@ -130,100 +196,159 @@ function status(){
   !navigator.onLine?"📴 Offline — net aane par apne aap sync hoga":
   dirty.length?`⏳ ${dirty.length} din ka sync baaki`:"✓ Google Sheet mein save ho gaya";
 }
+
+/* ---------- Render ---------- */
+function cardHTML(k){
+ const n=names[k],r=(data[date]||{})[n]||{},ab=r.i==="Absent";
+ const done=ab||KEYS.every(([key])=>r[key]);
+ const cell=([key,lab])=>`<div><span class="lb">${lab}</span><div class="ir"><input type="text" inputmode="numeric" autocomplete="off" value="${ab?"":esc(r[key]||"")}" ${ab?"disabled":""} data-n="${k}" data-k="${key}"><button class="nw" data-now="${k}|${key}" ${ab?"disabled":""} aria-label="अभी का समय">⏱</button></div></div>`;
+ return `<div class="c${ab?" ab":""}${done?" done":""}" id="c${k}"><div class="h"><b>${k+1}. ${esc(n)}</b><div class="hb"><button class="dbtn" data-def="${k}">✓ रोज़</button><button class="abtn" data-ab="${k}">${ab?"✕ गैरहाज़िर":"गैरहाज़िर?"}</button></div></div><div class="g">${KEYS.map(cell).join("")}</div></div>`;
+}
+function renderCard(k){const el=$("#c"+k);if(el)el.outerHTML=cardHTML(k);status()}
+function markCard(k){
+ const r=(data[date]||{})[names[k]]||{},el=$("#c"+k);if(!el)return;
+ el.classList.toggle("done",r.i==="Absent"||KEYS.every(([key])=>r[key]));
+}
 function render(){
- const d=data[date]||{};
+ const d0=data[date]||{};
  $("#dt").value=label(date);
  $("#wd").textContent=new Date(date+"T00:00").toLocaleDateString("hi-IN",{weekday:"long"});
- $("#list").innerHTML=names.map((n,k)=>{
-  const r=d[n]||{},ab=r.i==="Absent";
-  const f=([key,lab])=>`<div><button class=lb data-now="${k}|${key}" ${ab?"disabled":""}>${lab}</button><input type=text inputmode=numeric autocomplete=off value="${ab?"":fmt12(r[key])}" ${ab?"disabled":""} data-n="${k}" data-k="${key}"></div>`;
-  return `<div class="c${ab?" ab":""}"><div class=h><b>${k+1}. ${n}</b><label><input type=checkbox ${ab?"checked":""} data-ab="${k}"> गैरहाज़िर</label></div><div class=g>${KEYS.map(f).join("")}</div></div>`}).join("");
+ const [ra,rb]=range();const idx=[];
+ for(let k=ra;k<rb;k++){const r=d0[names[k]]||{};if(pend&&(r.i==="Absent"||KEYS.every(([key])=>r[key])))continue;idx.push(k)}
+ $("#list").innerHTML=idx.length?idx.map(cardHTML).join(""):`<p class="tip">${pend?"🎉 इस ग्रुप में कुछ बाकी नहीं है":""}</p>`;
+ $("#pend").classList.toggle("on",pend);
  status();
 }
+
+/* ---------- Typing ---------- */
 const list=$("#list");
+const nextIn=t=>{const all=[...list.querySelectorAll(`input[data-k="${t.dataset.k}"]:not(:disabled)`)];return all[all.indexOf(t)+1]};
 list.addEventListener("focusin",e=>{if(e.target.dataset.k)setTimeout(()=>e.target.select(),0)});
 list.addEventListener("focusout",e=>{
  const t=e.target;if(t.dataset.k===undefined||t.disabled)return;
- const v=parseTyped(t.value,t.dataset.k);
+ const v=parseTyped(t.value);
  if(v===null){t.classList.add("bad");return}
  t.classList.remove("bad");
- const r=rec(names[t.dataset.n]);
- if((r[t.dataset.k]||"")!==v){r[t.dataset.k]=v;persist()}
- t.value=fmt12(v);
+ const k=+t.dataset.n,r=rec(names[k]);
+ if((r[t.dataset.k]||"")!==v){snap();r[t.dataset.k]=v;persist();markCard(k)}
+ t.value=v;
 });
 list.addEventListener("input",e=>{
- const t=e.target;if(t.dataset.k===undefined||!/^\d{4}$/.test(t.value))return;
- if(parseTyped(t.value)===null){t.classList.add("bad");return}
- const all=[...list.querySelectorAll(`input[data-k="${t.dataset.k}"]:not(:disabled)`)];
- const nx=all[all.indexOf(t)+1];if(nx)nx.focus();else t.blur();
+ const t=e.target;if(t.dataset.k===undefined)return;
+ t.classList.toggle("bad",/^\d{4}$/.test(t.value)&&parseTyped(t.value)===null);
+ if(!/^\d{4}$/.test(t.value)||parseTyped(t.value)===null)return;
+ const nx=nextIn(t);if(nx)nx.focus();else t.blur();
 });
 list.addEventListener("keydown",e=>{
  if(e.key!=="Enter"||e.target.dataset.k===undefined)return;
- e.preventDefault();
- const all=[...list.querySelectorAll(`input[data-k="${e.target.dataset.k}"]:not(:disabled)`)];
- const nx=all[all.indexOf(e.target)+1];e.target.blur();if(nx)nx.focus();
+ e.preventDefault();const nx=nextIn(e.target);e.target.blur();if(nx)nx.focus();
 });
-list.addEventListener("change",e=>{
- const t=e.target;
- if(t.dataset.ab!==undefined){const n=names[t.dataset.ab];
-  if(t.checked){(data[date]=data[date]||{})[n]={i:"Absent"}}else rec(n).i="";
-  persist();render()}
-});
+
+/* ---------- Buttons on cards ---------- */
 list.addEventListener("click",e=>{
- const b=e.target.closest("[data-now]");if(!b)return;
- const [k,key]=b.dataset.now.split("|");rec(names[k])[key]=nowT();persist();render();
+ const nb=e.target.closest("[data-now]");
+ if(nb){
+  const [k,key]=nb.dataset.now.split("|"),t=nowT();
+  snap();rec(names[k])[key]=t;persist();renderCard(+k);
+  toast(`${names[k]} — ${KEYS.find(x=>x[0]===key)[1]} ${t} भरा`,true);return;
+ }
+ const db=e.target.closest("[data-def]");
+ if(db){
+  const k=+db.dataset.def,n=names[k],r=rec(n);snap();let c=0;
+  KEYS.forEach(([key])=>{if(!r[key]&&defs[key]){r[key]=defs[key];c++}});
+  if(!c){toast("रोज़ वाला समय Setting में डालें, या खाने पहले से भरे हैं",false);return}
+  persist();renderCard(k);toast(`${n} — रोज़ वाला समय भरा`,true);return;
+ }
+ const ab=e.target.closest("[data-ab]");
+ if(ab){
+  const k=+ab.dataset.ab,n=names[k],r=rec(n);snap();
+  if(r.i==="Absent"){const p=r._p||{};data[date][n]={...p};if(data[date][n].i==="Absent")data[date][n].i="";toast(`${n} — गैरहाज़िर हटाया`,true)}
+  else{data[date][n]={i:"Absent",_p:{...r}};toast(`${n} — गैरहाज़िर लगाया`,true)}
+  persist();renderCard(k);
+ }
 });
+
+/* ---------- Bulk ---------- */
 document.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{
- const key=b.dataset.b;let t=parseTyped($("#bt").value,key);
+ const key=b.dataset.b,nm=KEYS.find(x=>x[0]===key)[1];
+ let t=parseTyped($("#bt").value);
  if(t===null){alert("समय सही नहीं है");return}
- t=t||nowT();let c=0;
- names.forEach(n=>{const r=rec(n);if(r.i==="Absent"||r[key])return;r[key]=t;c++});
- if(c)persist();render();
+ t=t||nowT();
+ const [ra,rb]=range();
+ const todo=names.slice(ra,rb).filter(n=>{const r=(data[date]||{})[n]||{};return r.i!=="Absent"&&!r[key]});
+ if(!todo.length){toast("कोई खाली नहीं मिला",false);return}
+ if(!confirm(`${ra+1}-${rb} में ${todo.length} लोगों का ${nm} ${t} भर दें?`))return;
+ snap();todo.forEach(n=>{rec(n)[key]=t});
+ persist();render();toast(`${todo.length} लोगों का ${nm} ${t} भरा`,true);
 });
-function goDate(iso_){date=iso_;render()}
+
+$("#bdef").onclick=()=>{
+ const [ra,rb]=range();let c=0;const who=[];
+ names.slice(ra,rb).forEach(n=>{const r=(data[date]||{})[n]||{};if(r.i==="Absent")return;
+  if(KEYS.some(([key])=>!r[key]&&defs[key]))who.push(n)});
+ if(!who.length){toast("कोई खाली नहीं मिला",false);return}
+ if(!confirm(`${ra+1}-${rb} में ${who.length} लोगों के खाली खाने रोज़ वाले समय से भर दें?`))return;
+ snap();who.forEach(n=>{const r=rec(n);KEYS.forEach(([key])=>{if(!r[key]&&defs[key])r[key]=defs[key]})});
+ persist();render();toast(`${who.length} लोगों का रोज़ वाला समय भरा`,true);
+};
+$("#pend").onclick=()=>{pend=!pend;render()};
+
+/* ---------- Date ---------- */
+function goDate(i){date=i;render()}
 function shift(x){const d=new Date(date+"T00:00");d.setDate(d.getDate()+x);goDate(iso(d))}
 $("#prev").onclick=()=>shift(-1);$("#next").onclick=()=>shift(1);
 $("#today").onclick=()=>goDate(iso(new Date()));
 $("#dt").addEventListener("focus",e=>setTimeout(()=>e.target.select(),0));
-function applyDate(){const v=parseDate($("#dt").value);if(v)goDate(v);else{$("#dt").value=label(date);}}
+function applyDate(){const v=parseDate($("#dt").value);if(v)goDate(v);else{$("#dt").value=label(date)}}
 $("#dt").addEventListener("change",applyDate);
 $("#dt").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();applyDate();e.target.blur()}});
+
+/* ---------- Sheet ---------- */
 function rowText(r){
  r=r||{};if(r.i==="Absent")return"Absent";
  if(!KEYS.some(([k])=>r[k]))return"";
- return KEYS.map(([k])=>r[k]?fmt12(r[k]):"--").join(" | ");
+ return KEYS.map(([k])=>r[k]||"--").join(" | ");
 }
 async function sync(){
+ if(syncing){again=true;return}
  if(!url||!navigator.onLine||!dirty.length){status();return}
+ syncing=true;
  for(const dd of [...dirty]){
-  const d=data[dd]||{};
+  const d=data[dd]||{},v=ver[dd]||0;
   const rows=names.map(n=>({name:n,v:rowText(d[n])}));
   try{
    await fetch(url,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({date:dd,rows})});
-   dirty=dirty.filter(x=>x!==dd);localStorage.setItem("dirty",JSON.stringify(dirty));
+   if((ver[dd]||0)===v){dirty=dirty.filter(x=>x!==dd);localStorage.setItem("dirty",JSON.stringify(dirty))}
   }catch(e){break}
  }
- status();
+ syncing=false;status();
+ if(again){again=false;setTimeout(sync,500)}
 }
 $("#sync").onclick=()=>{if(!dirty.includes(date))dirty.push(date);sync()};
 $("#pull").onclick=async()=>{
  if(!url){alert("Pehle Setting mein Sheet link daalein");return}
+ if(dirty.includes(date)&&!confirm("Is din ka kuch data abhi Sheet mein gaya nahi hai. Sheet wala data uske upar aa jayega. Aage badhein?"))return;
  try{
   const j=await (await fetch(url+"?date="+date)).json();
   const rows=(j.rows||[]).filter(r=>r.v);
   if(!rows.length){alert("Is din ka data Sheet mein nahi mila");return}
-  data[date]={};
+  snap();data[date]={};
   rows.forEach(r=>{
    if(r.v==="Absent"){data[date][r.name]={i:"Absent"};return}
    const p=r.v.split(/\s*\|\s*/).map(x=>x==="--"?"":parse12(x));
    data[date][r.name]={i:p[0]||"",lo:p[1]||"",li:p[2]||"",o:p[3]||""};
   });
-  localStorage.setItem("att",JSON.stringify(data));render();
+  localStorage.setItem("att",JSON.stringify(data));render();toast("Sheet se data aa gaya",true);
  }catch(e){alert("Sheet se data nahi aaya. Net ya link check karein.")}
 };
-$("#cfg").onclick=()=>{$("#url").value=url;$("#nm").value=names.join("\n");$("#dlg").showModal()};
+
+/* ---------- Settings ---------- */
+$("#cfg").onclick=()=>{KEYS.forEach(([k])=>$("#d_"+k).value=defs[k]||"");$("#url").value=url;$("#nm").value=names.join("\n");$("#dlg").showModal()};
 $("#close").onclick=()=>$("#dlg").close();
 $("#save").onclick=()=>{
+ const nd={};
+ for(const [k] of KEYS){const v=parseTyped($("#d_"+k).value);if(v===null){alert("रोज़ वाला समय सही नहीं है");return}nd[k]=v}
+ defs=nd;localStorage.setItem("defs",JSON.stringify(defs));
  url=$("#url").value.trim()||DEFAULT_URL;localStorage.setItem("url",url);
  const nn=$("#nm").value.split("\n").map(s=>s.trim()).filter(Boolean);
  if(nn.length){names=nn;localStorage.setItem("names",JSON.stringify(names))}
